@@ -72,6 +72,8 @@ static const uint32_t flash_start = 0x00000000;
 // Size of flash
 static const uint32_t flash_size = 0x00040000;
 
+#define SECTOR_INFO_AVAILABLE 1
+
 /**
 * List of start and size for each size of flash sector - even indexes are start, odd are size
 * The size will apply to all sectors between the listed address and the next address
