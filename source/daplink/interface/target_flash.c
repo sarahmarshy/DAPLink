@@ -141,7 +141,7 @@ static error_t target_flash_erase_sector(uint32_t addr)
     const program_target_t *const flash = target_device.flash_algo;
 
     // Check to make sure the address is on a sector boundary
-    if ((addr % target_device.sector_size) != 0) {
+    if ((addr % target_flash_erase_sector_size(addr)) != 0) {
         return ERROR_ERASE_SECTOR;
     }
 
@@ -172,11 +172,20 @@ static error_t target_flash_erase_chip(void)
 static uint32_t target_flash_program_page_min_size(uint32_t addr)
 {
     uint32_t size = 256;
-    util_assert(target_device.sector_size >= size);
+    util_assert(target_flash_erase_sector_size(addr) >= size);
     return size;
 }
 
 static uint32_t target_flash_erase_sector_size(uint32_t addr)
 {
+#ifdef SECTOR_INFO_AVAILABLE
+    int num_sectors = sizeof(sectors_info)/sizeof(sectors_info[0]);
+    for (int sector_index = 0; sector_index < (num_sectors-1); sector_index+=2) {
+        if (address >= sector_info[sector_index]) {
+            return sector_info[sector_index+1];
+        }
+    }
+#else 
     return target_device.sector_size;
+#endif
 }
