@@ -37,6 +37,15 @@
 #define flash_manager_printf(...)
 #endif
 
+#define DEBUG_ERASE_SECTOR     1
+
+#if DEBUG_ERASE_SECTOR
+#include "daplink_debug.h"
+#define erase_sector_printf    debug_msg
+#else
+#define erase_sector_printf(...)
+#endif
+
 typedef enum {
     STATE_CLOSED,
     STATE_OPEN,
@@ -305,7 +314,7 @@ static error_t setup_next_sector(uint32_t addr)
     if(page_erase_enabled) {
         // Erase the current sector
         status = intf->erase_sector(current_sector_addr);
-        flash_manager_printf("    intf->erase_sector(addr=0x%x) ret=%i\r\n", current_sector_addr);
+        erase_sector_printf("    intf->erase_sector(addr=0x%x,size=0x%x) ret=%i\r\n", current_sector_addr, sector_size, status);
         if (ERROR_SUCCESS != status) {
             intf->uninit();
             return status;
