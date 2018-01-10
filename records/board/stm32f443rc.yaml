@@ -1,0 +1,7 @@
+common:
+    sources:
+        board:
+            - source/board/stm32l443rc.c
+        target:
+            - source/target/st/stm32l443rc/target.c
+            - source/target/st/target_reset.c
